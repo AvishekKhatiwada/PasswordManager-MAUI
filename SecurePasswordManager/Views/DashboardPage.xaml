@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.DashboardPage"
+             x:Name="Root"
+             Title="Vault"
+             Shell.NavBarIsVisible="False">
+    <Grid Padding="20" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="14">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Vault" Style="{StaticResource HeroTitleStyle}" />
+                <Label Text="Your passwords &amp; secure credentials" Style="{StaticResource SubtitleStyle}" />
+                <Border Style="{StaticResource BadgePillStyle}" HorizontalOptions="Start" Margin="0,4,0,0">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#128737;" Style="{StaticResource IconGlyphStyle}" FontSize="13" />
+                        <Label Text="Encrypted &amp; Private" TextColor="{StaticResource Success}" FontSize="12" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="+  Add Credential"
+                    Command="{Binding AddCommand}"
+                    Style="{StaticResource PillButtonStyle}"
+                    VerticalOptions="Start" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="2*,*" ColumnSpacing="12">
+            <SearchBar Placeholder="Search vault..."
+                       Text="{Binding SearchText}"
+                       SearchCommand="{Binding RefreshCommand}" />
+            <Picker Grid.Column="1"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    ItemDisplayBinding="{Binding Name}" />
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource SegmentToggleStyle}" HorizontalOptions="Start">
+            <HorizontalStackLayout Spacing="4">
+                <Button Text="Grid" Command="{Binding SetGridCommand}" Style="{StaticResource SegmentButtonStyle}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsGrid}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
+                            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+                <Button Text="List" Command="{Binding SetListCommand}" Style="{StaticResource SegmentButtonStyle}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsGrid}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
+                            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </HorizontalStackLayout>
+        </Border>
+
+        <RefreshView Grid.Row="3" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Credentials}"
+                            ItemsLayout="{Binding IsGrid, Converter={StaticResource BoolToItemsLayoutConverter}}"
+                            SelectionMode="None"
+                            ItemSizingStrategy="MeasureFirstItem">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24" Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Border Style="{StaticResource EmptyStateIconStyle}">
+                            <Label Text="&#128274;" FontSize="48" Style="{StaticResource IconGlyphStyle}" />
+                        </Border>
+                        <Label Text="Your vault is empty" Style="{StaticResource SectionTitleStyle}" HorizontalTextAlignment="Center" Margin="0,10,0,0" />
+                        <Label Text="Store your passwords securely and access them whenever you need them."
+                               Style="{StaticResource SubtitleStyle}"
+                               HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center"
+                               WidthRequest="280" />
+                        <Button Text="+  Add your first credential"
+                                Command="{Binding AddCommand}"
+                                Style="{StaticResource PillButtonStyle}"
+                                Margin="0,10,0,10" />
+                        <CollectionView ItemsSource="{Binding QuickAddShortcuts}" HorizontalOptions="Center">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="18" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <VerticalStackLayout Spacing="6" WidthRequest="64">
+                                        <Border Style="{StaticResource ShortcutIconStyle}" BackgroundColor="{AppThemeBinding Light={StaticResource Panel}, Dark={StaticResource PanelDark}}">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.QuickAddCommand}" CommandParameter="{Binding .}" />
+                                            </Border.GestureRecognizers>
+                                            <Label Text="{Binding Glyph}" FontSize="22" Style="{StaticResource IconGlyphStyle}" />
+                                        </Border>
+                                        <Label Text="{Binding Label}" Style="{StaticResource CaptionStyle}" HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Copy password" Command="{Binding Source={x:Reference Root}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Copy username" Command="{Binding Source={x:Reference Root}, Path=BindingContext.CopyUsernameCommand}" CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Copy email" Command="{Binding Source={x:Reference Root}, Path=BindingContext.CopyEmailCommand}" CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Delete" BackgroundColor="{StaticResource Danger}" Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeleteCommand}" CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,10">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="18" />
+                                    <Label Grid.Column="1" Text="Favorite" IsVisible="{Binding IsFavorite}" Style="{StaticResource CaptionStyle}" />
+                                    <Label Grid.Row="1" Text="{Binding Username}" Style="{StaticResource MutedBodyStyle}" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding CategoryName}" Style="{StaticResource CaptionStyle}" />
+                                    <Label Grid.Row="2" Text="{Binding UpdatedAt, StringFormat='Updated {0:g}'}" Style="{StaticResource CaptionStyle}" />
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
+                                        <Button Text="Open" Command="{Binding Source={x:Reference Root}, Path=BindingContext.EditCommand}" CommandParameter="{Binding .}" Style="{StaticResource SmallButtonStyle}" />
+                                        <Button Text="Copy" Command="{Binding Source={x:Reference Root}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding .}" Style="{StaticResource SmallButtonStyle}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

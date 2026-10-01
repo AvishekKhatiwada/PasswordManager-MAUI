@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             Title="Unlock vault">
+    <Grid Padding="28" RowDefinitions="*,Auto,*">
+        <Border Grid.Row="1" Style="{StaticResource PanelStyle}" MaximumWidthRequest="520">
+            <VerticalStackLayout Spacing="18">
+                <Label Text="Unlock vault" Style="{StaticResource HeroTitleStyle}" />
+                <Label Text="Authenticate locally to decrypt your SQLCipher vault." Style="{StaticResource MutedBodyStyle}" />
+                <Entry Placeholder="Master password"
+                       IsPassword="True"
+                       Text="{Binding MasterPassword}"
+                       ReturnType="Done"
+                       Completed="OnPasswordCompleted" />
+                <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Danger}" />
+                <Button Text="Unlock"
+                        Command="{Binding UnlockCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                <Button Text="Use biometrics"
+                        Command="{Binding BiometricUnlockCommand}"
+                        IsVisible="{Binding CanUseBiometrics}"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+                <Button Text="Forgot password?"
+                        Command="{Binding ForgotPasswordCommand}"
+                        Style="{StaticResource SmallButtonStyle}"
+                        TextColor="{StaticResource Danger}"
+                        HorizontalOptions="Center" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

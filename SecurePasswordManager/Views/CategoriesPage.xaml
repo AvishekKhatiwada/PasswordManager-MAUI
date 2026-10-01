@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.CategoriesPage"
+             x:Name="Root"
+             Title="Categories"
+             Shell.NavBarIsVisible="False">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <HorizontalStackLayout Spacing="12">
+                <Border WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="RoundRectangle 26"
+                        BackgroundColor="{AppThemeBinding Light=#DBEAFE, Dark=#1E3A8A}"
+                        VerticalOptions="Start">
+                    <Label Text="&#9733;" FontSize="22" Style="{StaticResource IconGlyphStyle}" TextColor="{StaticResource Primary}" />
+                </Border>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Categories" Style="{StaticResource HeroTitleStyle}" />
+                    <Label Text="Organize your vault" Style="{StaticResource SubtitleStyle}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <Button Text="+ New category" Command="{Binding StartCreateCommand}" Style="{StaticResource PrimaryButtonStyle}"
+                    IsVisible="{Binding IsFormVisible, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Border Style="{StaticResource PanelStyle}" IsVisible="{Binding IsFormVisible}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding FormTitle}" Style="{StaticResource SectionTitleStyle}" />
+                    <Entry Placeholder="Category name" Text="{Binding FormName}" />
+
+                    <Label Text="Icon" Style="{StaticResource CaptionStyle}" />
+                    <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding IconPalette}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20"
+                                        Stroke="{StaticResource BorderColor}" StrokeThickness="1">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectIconCommand}"
+                                                               CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding .}" Style="{StaticResource IconGlyphStyle}" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                    <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20" StrokeThickness="2"
+                            Stroke="{StaticResource Primary}" HorizontalOptions="Start">
+                        <Label Text="{Binding FormIconGlyph}" Style="{StaticResource IconGlyphStyle}" />
+                    </Border>
+
+                    <Label Text="Color" Style="{StaticResource CaptionStyle}" />
+                    <FlexLayout Wrap="Wrap" JustifyContent="Start" BindableLayout.ItemsSource="{Binding ColorPalette}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Border WidthRequest="32" HeightRequest="32" Margin="0,0,8,8" StrokeShape="RoundRectangle 16"
+                                        StrokeThickness="0" BackgroundColor="{Binding .}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectColorCommand}"
+                                                               CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                    <Border WidthRequest="32" HeightRequest="32" StrokeShape="RoundRectangle 16" StrokeThickness="2"
+                            Stroke="{StaticResource Primary}" BackgroundColor="{Binding FormColorHex}" HorizontalOptions="Start" />
+
+                    <Label Text="{Binding StatusMessage}" TextColor="{StaticResource Danger}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Save" Command="{Binding SaveFormCommand}" Style="{StaticResource PrimaryButtonStyle}" />
+                        <Button Grid.Column="1" Text="Cancel" Command="{Binding CancelFormCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Categories}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource CardStyle}">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                        BackgroundColor="{Binding ColorHex}" VerticalOptions="Center">
+                                    <Label Text="{Binding IconGlyph}" TextColor="White" Style="{StaticResource IconGlyphStyle}" />
+                                </Border>
+                                <Label Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                                <Button Grid.Column="2" Text="Edit"
+                                        Command="{Binding Source={x:Reference Root}, Path=BindingContext.StartEditCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SmallButtonStyle}" />
+                                <Button Grid.Column="3" Text="Delete"
+                                        Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeleteCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SmallButtonStyle}"
+                                        TextColor="{StaticResource Danger}"
+                                        IsVisible="{Binding IsDefault, Converter={StaticResource InverseBoolConverter}}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

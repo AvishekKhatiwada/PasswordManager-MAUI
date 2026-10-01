@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.TrashPage"
+             x:Name="Root"
+             Title="Trash &amp; Archive"
+             Shell.NavBarIsVisible="False">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <HorizontalStackLayout Spacing="12">
+                <Border WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="RoundRectangle 26"
+                        BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
+                        VerticalOptions="Start">
+                    <Label Text="&#128465;" FontSize="22" Style="{StaticResource IconGlyphStyle}" TextColor="{StaticResource Danger}" />
+                </Border>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Trash &amp; Archive" Style="{StaticResource HeroTitleStyle}" />
+                    <Label Text="Deleted and archived items" Style="{StaticResource SubtitleStyle}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Border Style="{StaticResource SegmentToggleStyle}" HorizontalOptions="Start">
+                    <HorizontalStackLayout Spacing="4">
+                        <Button Text="Trash" Command="{Binding SetTrashCommand}" Style="{StaticResource SegmentButtonStyle}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding ShowArchived}" Value="False">
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
+                                    <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button Text="Archived" Command="{Binding SetArchivedCommand}" Style="{StaticResource SegmentButtonStyle}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding ShowArchived}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
+                                    <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </HorizontalStackLayout>
+                </Border>
+                <Button Grid.Column="1"
+                        Text="Empty trash"
+                        Command="{Binding EmptyTrashCommand}"
+                        Style="{StaticResource SmallButtonStyle}"
+                        TextColor="{StaticResource Danger}"
+                        HorizontalOptions="End"
+                        IsVisible="{Binding ShowArchived, Converter={StaticResource InverseBoolConverter}}" />
+            </Grid>
+
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding ShowArchived, Converter={StaticResource InverseBoolConverter}}">
+                <Label Text="Credentials" Style="{StaticResource SectionTitleStyle}" />
+                <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding TrashedCredentials}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource CardStyle}">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding DeletedAt, StringFormat='Deleted {0:g}'}" Style="{StaticResource CaptionStyle}" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="1" Text="Restore"
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.RestoreCredentialCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource SmallButtonStyle}" />
+                                    <Button Grid.Column="2" Text="Delete forever"
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeleteCredentialForeverCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            TextColor="{StaticResource Danger}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Secure notes" Style="{StaticResource SectionTitleStyle}" />
+                <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding TrashedNotes}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource CardStyle}">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding DeletedAt, StringFormat='Deleted {0:g}'}" Style="{StaticResource CaptionStyle}" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="1" Text="Restore"
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.RestoreNoteCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource SmallButtonStyle}" />
+                                    <Button Grid.Column="2" Text="Delete forever"
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeleteNoteForeverCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            TextColor="{StaticResource Danger}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding ArchivedCredentials}" IsVisible="{Binding ShowArchived}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource CardStyle}">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding ArchivedAt, StringFormat='Archived {0:g}'}" Style="{StaticResource CaptionStyle}" />
+                                </VerticalStackLayout>
+                                <Button Grid.Column="1" Text="Unarchive"
+                                        Command="{Binding Source={x:Reference Root}, Path=BindingContext.UnarchiveCredentialCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SmallButtonStyle}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

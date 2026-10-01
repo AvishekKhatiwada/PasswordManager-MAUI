@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.OnboardingPage"
+             Shell.NavBarIsVisible="False"
+             Title="Create vault">
+    <ScrollView>
+        <Grid Padding="28" RowSpacing="22" RowDefinitions="Auto,Auto,*">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Secure Password Manager" Style="{StaticResource HeroTitleStyle}" />
+                <Label Text="Create your local encrypted vault. Your master password never leaves this device and is never stored." Style="{StaticResource MutedBodyStyle}" />
+            </VerticalStackLayout>
+
+            <Border Grid.Row="1" Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Master password" Style="{StaticResource SectionTitleStyle}" />
+                    <Entry Placeholder="Master password"
+                           IsPassword="True"
+                           Text="{Binding MasterPassword}"
+                           ReturnType="Next"
+                           SemanticProperties.Hint="Enter your master password" />
+                    <Entry Placeholder="Confirm master password"
+                           IsPassword="True"
+                           Text="{Binding ConfirmPassword}"
+                           ReturnType="Done"
+                           SemanticProperties.Hint="Confirm your master password" />
+                    <ProgressBar Progress="{Binding StrengthScore}" ProgressColor="{StaticResource Success}" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding StrengthLabel}" FontAttributes="Bold" />
+                        <Label Grid.Column="1" Text="{Binding ValidationText}" Style="{StaticResource CaptionStyle}" HorizontalTextAlignment="End">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HasValidationError}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource Danger}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto" Padding="0,8,0,0">
+                        <VerticalStackLayout>
+                            <Label Text="Biometric unlock" FontAttributes="Bold" />
+                            <Label Text="Stores only the derived vault key in the OS secure store." Style="{StaticResource CaptionStyle}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" IsToggled="{Binding EnableBiometrics}" />
+                    </Grid>
+                    <Button Text="Create encrypted vault"
+                            Command="{Binding CreateVaultCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.SettingsPage"
+             Title="Settings"
+             Shell.NavBarIsVisible="False">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Settings" Style="{StaticResource HeroTitleStyle}" />
+                <Label Text="Manage preferences, backups &amp; security" Style="{StaticResource SubtitleStyle}" />
+                <Border Style="{StaticResource BadgePillStyle}" HorizontalOptions="Start" Margin="0,4,0,0">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="&#128737;" Style="{StaticResource IconGlyphStyle}" FontSize="13" />
+                        <Label Text="Encrypted &amp; Private" TextColor="{StaticResource Success}" FontSize="12" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+            <Border Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="14">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#9881;" Style="{StaticResource IconGlyphStyle}" FontSize="16" />
+                        <Label Text="Preferences" Style="{StaticResource SectionTitleStyle}" />
+                    </HorizontalStackLayout>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+                        <Label Text="Theme" VerticalOptions="Center" />
+                        <Picker Grid.Column="1" WidthRequest="160" ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" />
+                        <Label Grid.Row="1" Text="Auto-lock minutes" VerticalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="1" WidthRequest="120" Keyboard="Numeric" Text="{Binding AutoLockMinutes}" />
+                        <Label Grid.Row="2" Text="Clipboard clear seconds" VerticalOptions="Center" />
+                        <Entry Grid.Row="2" Grid.Column="1" WidthRequest="120" Keyboard="Numeric" Text="{Binding ClipboardClearSeconds}" />
+                        <Label Grid.Row="3" Text="Biometric unlock" VerticalOptions="Center" />
+                        <Switch Grid.Row="3" Grid.Column="1" IsToggled="{Binding BiometricsEnabled}" />
+                    </Grid>
+                    <Button Text="Save settings" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="14">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#128190;" Style="{StaticResource IconGlyphStyle}" FontSize="16" />
+                        <Label Text="Backup and restore" Style="{StaticResource SectionTitleStyle}" />
+                    </HorizontalStackLayout>
+                    <Entry Placeholder="Backup password" IsPassword="True" Text="{Binding BackupPassword}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Export encrypted backup" Command="{Binding ExportBackupCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                        <Button Grid.Column="1" Text="Import encrypted backup" Command="{Binding ImportBackupCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#128465;" Style="{StaticResource IconGlyphStyle}" FontSize="16" />
+                        <Label Text="Data" Style="{StaticResource SectionTitleStyle}" />
+                    </HorizontalStackLayout>
+                    <Button Text="Trash and archive" Command="{Binding OpenTrashCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button Text="Manage categories" Command="{Binding OpenCategoriesCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#128274;" Style="{StaticResource IconGlyphStyle}" FontSize="16" />
+                        <Label Text="Security" Style="{StaticResource SectionTitleStyle}" />
+                    </HorizontalStackLayout>
+                    <Button Text="Lock now" Command="{Binding LockCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button Text="Change master password" Command="{Binding OpenChangeMasterPasswordCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button Text="Reset database" Command="{Binding ResetVaultCommand}" TextColor="{StaticResource Danger}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Secure Password Manager 1.0 - local-first, SQLCipher encrypted, zero-knowledge by design." Style="{StaticResource CaptionStyle}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

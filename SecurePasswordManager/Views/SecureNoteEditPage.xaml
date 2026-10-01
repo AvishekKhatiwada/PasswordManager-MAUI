@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SecurePasswordManager.Views.SecureNoteEditPage"
+             Title="Secure note"
+             Shell.NavBarIsVisible="False">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+            <Label Text="Secure note" Style="{StaticResource PageTitleStyle}" />
+            <Border Style="{StaticResource PanelStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Entry Placeholder="Note title" Text="{Binding NoteTitle}" />
+                    <Entry Placeholder="Tags" Text="{Binding Tags}" />
+                    <Editor Placeholder="Markdown secure note" Text="{Binding Markdown}" AutoSize="TextChanges" MinimumHeightRequest="320" />
+                    <Label Text="{Binding StatusMessage}" TextColor="{StaticResource Danger}" />
+                    <Button Text="Save" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button Text="Move to trash" Command="{Binding DeleteCommand}" TextColor="{StaticResource Danger}" IsVisible="{Binding IsExistingNote}" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
